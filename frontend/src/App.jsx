@@ -4,6 +4,8 @@ import StatusFilter from './components/StatusFilter';
 import TaskTable from './components/TaskTable';
 import { useTasks } from './hooks/useTasks';
 
+const PAGE_SIZE = 10;
+
 export default function App() {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -29,9 +31,7 @@ export default function App() {
     setPage(1);
   };
 
-  const { tasks, total, loading, error } = useTasks(debouncedQuery, status, page, 10);
-
-  const totalPages = Math.ceil(total / 10);
+  const { tasks, total, totalPages, loading, error } = useTasks(debouncedQuery, status, page, PAGE_SIZE);
 
   return (
     <div className="app">
@@ -47,19 +47,36 @@ export default function App() {
 
       <TaskTable tasks={tasks} loading={loading} error={error} />
 
-      {totalPages > 1 && (
-        <div className="pagination">
-          <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-            Previous
-          </button>
-          <span>
-            Page {page} of {totalPages}
+      <div className="pagination" role="navigation" aria-label="Pagination">
+        {total > 0 && (
+          <span className="result-count" aria-live="polite">
+            {total} task{total !== 1 ? 's' : ''} found
           </span>
-          <button disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
-            Next
-          </button>
-        </div>
-      )}
+        )}
+        {totalPages > 1 && (
+          <>
+            <button
+              id="btn-prev"
+              disabled={page <= 1}
+              onClick={() => setPage((p) => p - 1)}
+              aria-label="Previous page"
+            >
+              Previous
+            </button>
+            <span>
+              Page {page} of {totalPages}
+            </span>
+            <button
+              id="btn-next"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => p + 1)}
+              aria-label="Next page"
+            >
+              Next
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

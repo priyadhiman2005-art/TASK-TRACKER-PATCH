@@ -13,7 +13,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     // Search tasks by term and optional status filter
     @Query(value = "SELECT * FROM tasks WHERE archived = FALSE "
                  + "AND (:status IS NULL OR status = :status) "
-                 + "AND (LOWER(title) LIKE :term OR LOWER(description) LIKE :term) "
+                 + "AND (LOWER(title) LIKE :term ESCAPE '\\' OR LOWER(description) LIKE :term ESCAPE '\\') "
                  + "ORDER BY created_at DESC",
            nativeQuery = true)
     List<Task> searchTasks(@Param("term") String term, @Param("status") String status);

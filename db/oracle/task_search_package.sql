@@ -11,6 +11,7 @@ CREATE OR REPLACE PACKAGE task_search_pkg AS
         description VARCHAR2(1000),
         status      VARCHAR2(20),
         priority    VARCHAR2(10),
+        archived    NUMBER(1),
         assignee    VARCHAR2(100),
         created_at  TIMESTAMP
     );
@@ -55,11 +56,11 @@ CREATE OR REPLACE PACKAGE BODY task_search_pkg AS
 
         -- Paginated results using ROWNUM (pre-12c pattern)
         OPEN p_results FOR
-            SELECT id, title, description, status, priority, assignee, created_at
+            SELECT id, title, description, status, priority, archived, assignee, created_at
               FROM (
                   SELECT t.*, ROWNUM AS rn
                     FROM (
-                        SELECT id, title, description, status, priority,
+                        SELECT id, title, description, status, priority, archived,
                                assignee, created_at
                           FROM tasks
                          WHERE archived = 0

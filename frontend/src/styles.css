@@ -162,3 +162,8 @@ body {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.result-count {
+  color: #666;
+  font-size: 0.8rem;
+}
